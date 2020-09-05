@@ -6,6 +6,7 @@ import {
   useStripe,
   useElements
 } from '@stripe/react-stripe-js';
+import axios from 'axios';
 
 const stripePromise = loadStripe(
   'pk_test_51HO9RkC1aJwwpXUQPTyh95N9JttTnGALXQDe72ZH6Hg40uqMIKTiEMdI8GYFD2yIBRUYOcx5noiZzrW0gqNr3JhG00rmyDDcIw'
@@ -24,7 +25,14 @@ const CheckoutForm = () => {
     });
 
     if (!error) {
-      console.log(paymentMethod);
+      const { id } = paymentMethod;
+
+      try {
+        const { data } = await axios.post('/api/charge', { id, amount: 1099 });
+        console.log(data);
+      } catch (error) {
+        console.log(error);
+      }
     }
   };
 
