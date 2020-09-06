@@ -12,7 +12,7 @@ const stripePromise = loadStripe(
   'pk_test_51HO9RkC1aJwwpXUQPTyh95N9JttTnGALXQDe72ZH6Hg40uqMIKTiEMdI8GYFD2yIBRUYOcx5noiZzrW0gqNr3JhG00rmyDDcIw'
 );
 
-const CheckoutForm = () => {
+const CheckoutForm = ({ success }) => {
   const stripe = useStripe();
   const elements = useElements();
 
@@ -30,6 +30,7 @@ const CheckoutForm = () => {
       try {
         const { data } = await axios.post('/api/charge', { id, amount: 1099 });
         console.log(data);
+        success();
       } catch (error) {
         console.log(error);
       }
@@ -56,9 +57,19 @@ const CheckoutForm = () => {
 };
 
 export default function Index() {
+  const [status, setStatus] = React.useState('ready');
+
+  if (status === 'success') {
+    return <div>Congrats, enjoy your pita sandwiches!!!</div>;
+  }
+
   return (
     <Elements stripe={stripePromise}>
-      <CheckoutForm />
+      <CheckoutForm
+        success={() => {
+          setStatus('success');
+        }}
+      />
     </Elements>
   );
 }
